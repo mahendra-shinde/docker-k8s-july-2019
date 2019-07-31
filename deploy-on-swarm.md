@@ -15,8 +15,12 @@
 
 2.  From command line use 
 
+    ```
     $ docker stack deploy --compose-file docker-compose.yaml app
+    ```
 
 3.  Check Deployment status
+    ```
     $ docker stack ls
     $ docker stack ps app
+    ```
