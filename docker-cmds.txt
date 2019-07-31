@@ -1,0 +1,14 @@
+docker info:        Print Detailed information from Docker Daemon
+                    includes version, plugins, containers & images
+
+docker run  :       To create and launch a new container
+                example:
+                    docker run --name c1 -it <nanoserver> cmd
+
+docker stop:        Stop a running container.
+                example:
+                    docker stop c1
+
+docker rm   :   Delete container and its writable layer.
+                example:
+                    docker rm c1
