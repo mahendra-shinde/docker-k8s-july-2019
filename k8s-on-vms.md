@@ -78,6 +78,8 @@
     NOTE: Your nodes are NOT READY
 
 11. Install the Network plugin 
+
+    Ref: [Kubernetes Docs](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
     
     ## Default firewall (iptables) would block the the packets
     ## Unblock using following command
