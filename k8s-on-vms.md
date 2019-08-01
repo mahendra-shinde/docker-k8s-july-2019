@@ -22,17 +22,18 @@
 4.  Once VM is Provisioned, Connect using Putty or Git Bash
 
 5.  Install Container Runtime : Docker
-
+    ```bash
     $ sudo apt update -y
     $ sudo apt install docker.io -y
     ## Add current user to 'docker' user group
     ## to avoid using 'sudo' prefix for every docker cli command
     ## You need to reconnect your remote session (No need for VM Restart!)
     $ sudo usermod -aG docker $USER
+    ```
 
 6.  Install Kubernetes from official repositories
     
-    ```
+    ```bash
     ## Switch to ROOT user for Installation
     sudo -i
     ## Install GPG Key (Encryption key) to VALIDATE kubernetes repository packages
