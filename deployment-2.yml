@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy2
+  labels:
+    app: app1
+spec:
+  replicas: 3
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      name: deploy2-pod  
+  template:
+    metadata:
+      name: deploy2-pods
+      labels:
+        name: deploy2-pod
+    spec:
+      containers:
+        - image: nginx:1.7.9
+          name: web
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service2
+spec:
+  type: LoadBalancer
+  selector:
+    name: deploy2-pod
+  ports:
+  - port: 8081
+    targetPort: 80

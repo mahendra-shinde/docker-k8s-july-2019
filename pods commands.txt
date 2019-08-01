@@ -1,0 +1,19 @@
+PODS:
+    ## Get All pods from Default namespace
+
+    $ kubectl get pods
+
+    ## Get All pods from kube-system namespace
+
+    $ kubectl get pods -n kube-system
+
+    ## Print details of one pod
+    $ kubectl describe pods <kube-dns-podname> -n kube-system
+
+    NOTE: Please replace <kube-dns-podname> with actual pod name.
+
+    ## Try deleting a pod 
+
+    $ kubectl delete pod <pod-name> -n kube-system
+
+    NOTE: replace <pod-name> with any existing pod name
