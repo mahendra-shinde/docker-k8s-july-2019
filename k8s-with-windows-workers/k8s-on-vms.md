@@ -104,12 +104,11 @@
 
     To download this file on ubuntu VM, and begin deployment try following command:
     ```bash
-    $ kubectl apply -f https://raw.githubusercontent.com/mahendra-shinde/docker-k8s-july-2019/master/k8s-with-windows-workers/kube-flannel.yml 
-    ```
+    $ wget https://raw.githubusercontent.com/mahendra-shinde/docker-k8s-july-2019/master/k8s-with-windows-workers/kube-flannel.yml 
     
-13. After the installation, check node status once again...
-
-    ```bash
+    $ kubectl apply -f kube-flannel.yml
+    
+    # Check the nodes
     $ kubectl get nodes
     ```
 
@@ -125,5 +124,40 @@
       In case URL is inaccessible, try visiting [this](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.15.md#v1151) page.
 
 3.  Extract the contents of downloaded file.
-4.  Connect to Windows Server VM using RDP and copy all extracted files inside your Windows VM (Create a folder: c:\k8s as target for files).
-5.   
+4.  Connect to Windows Server VM using RDP and copy all extracted files inside your Windows VM (Create a folder: c:\k as target for files).
+
+5.   Now From powershell prompt run following commands to download kube config file
+   
+    ```bash
+    $ cd c:/k
+    $ scp mahendra@182.18.0.4:/home/mahendra/.kube/config . 
+    ```
+![](step-5.png)
+> Please replace `mahendra` with your user-name in all above commands.
+
+6.  Now run following commands to install flannel on windows
+
+    ```pwsh
+    $ cd c:\k
+    $ [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $ wget https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/flannel/start.ps1 -o c:\k8s\start.ps1
+    $ .\start.ps1 -ManagementIP 182.18.0.5 -NetworkMode overlay -InterfaceName "Ethernet 2"  -LogDir c:\k
+    ```
+
+7.  Now, once the process is finished, go back to Ubuntu (Master) VM to Check node list
+
+    ```bash
+    $ kubectl get nodes
+    ```
+    Is your Windows node listed as `NotReady` ? Do next step.
+
+8.  Download the script to register `kubelet.exe` and `kube-proxy.exe` as windows services
+    from [here](./register-svc.ps1). Download one more tool (nssm) from [here](https://nssm.cc/release/nssm-2.24.zip).
+
+    nssm-2.24.zip contains nssm.exe inside win64 folder, please copy this file to c:\k folder.
+
+    ```pwsh
+    $ cd c:\k
+    $ C:\k\register-svc.ps1 -NetworkMode overlay -ManagementIP 182.18.0.5 -LogDir c:\k
+    ```
+    ![](step-8.png)
