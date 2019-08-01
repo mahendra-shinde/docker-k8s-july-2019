@@ -1,5 +1,7 @@
 ## Setting up Kubernetes Cluster
-## https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm
+
+### https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm
+
 1. Create Resource Group 
         Name: k8s-Cluster
         Location: Southeast asia
@@ -59,14 +61,14 @@
 
 8.  Bootstrap a cluster (Wait for cluster to be ready)
 
-    $ sudo kubeadm init
+    $ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 
     Command should generate TOKEN for adding worker nodes.
 
 9.  Copy the kubeconfig from ROOT folder to USER'S home folder
 
     ```bash
-    mkdir -p $HOME/.kube                                                             sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                         sudo chown $(id -u):$(id -g) $HOME/.kube/config 
+    mkdir -p $HOME/.kube                                                         sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                     sudo chown $(id -u):$(id -g) $HOME/.kube/config 
     ```
 
 10. Test the cluster using kubectl
@@ -75,7 +77,7 @@
     $ kubectl get nodes
     ```
 
-    NOTE: Your nodes are NOT READY
+    NOTE: Your nodes are NOT READY, you need to install CNI Network plugin.
 
 11. Install the Network plugin 
 
@@ -85,9 +87,48 @@
     ## Unblock using following command
     $ sudo sysctl net.bridge.bridge-nf-call-iptables=1
 
-    ## Install weavenet plugin
+12. Click [here](./kube-flannel.yml) for the modified flannel deployment file.
 
-    $ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+    To download this file on ubuntu VM, try following command:
+    ```bash
+    wget 
+    ```
 
-    $ kubectl get nodes
+    
 
+13. Once the file is open, locate the following section of file, and modify it:
+
+    > OLD FILE
+    ```json
+    net-conf.json: |
+    {
+      "Network": "10.244.0.0/16",
+      "Backend": {
+        "Type": "vxlan"
+      }
+    }
+    ```
+
+    > NEW FILE
+    ```json
+    
+    ```
+
+    > Notice the Backend type and Network IP range. The IP range MUST match with `pod-network-cidr` used with `kubeadm init` command. 
+    > You need to set TWO port mappings VNI and Port to values 4096 and 4789 respectivally.
+
+
+### Phase II  : Adding Windows Worker nodes
+
+1.  Create a new `Windows Server 2019 Datacenter with Containers` VM. in same resource group as the Ubuntu (Master) VM.
+
+2.  Download the necessary kubernetes binaries from URL:
+
+    https://dl.k8s.io/v1.15.0/kubernetes-node-windows-amd64.tar.gz 
+
+    > The above url would allow you to download k8s api version 1.15.1
+      In case URL is inaccessible, try visiting [this](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.15.md#v1151) page.
+
+3.  Extract the contents of downloaded file.
+4.  Connect to Windows Server VM using RDP and copy all extracted files inside your Windows VM (Create a folder: c:\k8s as target for files).
+5.   
