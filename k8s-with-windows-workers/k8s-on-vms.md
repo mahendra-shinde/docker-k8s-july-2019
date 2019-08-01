@@ -3,23 +3,32 @@
 ### https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm
 
 1. Create Resource Group 
-        Name: k8s-Cluster
-        Location: Southeast asia
+
+    ```
+    Name: k8s-Cluster
+    Location: Southeast asia
+    ```
 
 2. Create Virtual Network
+
     Create Resource > Networking > Virtual Network
-        Network Name:   cluster-Net
-        IP Range:       182.18.0.0/16
-        Resource group: k8s-cluster
-        Subnet:         182.18.0.0/24
+    ```
+    Network Name   cluster-Net
+    IP Range       182.18.0.0/16
+    Resource group k8s-cluster
+    Subnet         182.18.0.0/24
+    ```
 
 3.  Create new VM 
-        VM Name:    master1
-        Ports:      SSH (22)
-        Username:   mahendra
-        Password:   <Password>
-        Network:    cluster-net
-        OS Disk:    Standard HDD (To Save cost!)
+
+    ```
+    VM Name:    master1
+    Ports:      SSH (22)
+    Username:   mahendra
+    Password:   <Password>
+    Network:    cluster-net
+    OS Disk:    Standard HDD (To Save cost!)
+    ```
 
 4.  Once VM is Provisioned, Connect using Putty or Git Bash
 
@@ -56,12 +65,14 @@
     ```
 
 7.  Set docker daemon to start on OS Boot
-
+    ```bash
     $ sudo systemctl enable docker
+    ```
 
 8.  Bootstrap a cluster (Wait for cluster to be ready)
-
+    ```bash
     $ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+    ```
 
     Command should generate TOKEN for adding worker nodes.
 
@@ -83,40 +94,24 @@
 
     Ref: [Kubernetes Docs](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
     
+    ```bash
     ## Default firewall (iptables) would block the the packets
     ## Unblock using following command
     $ sudo sysctl net.bridge.bridge-nf-call-iptables=1
+    ```
 
 12. Click [here](./kube-flannel.yml) for the modified flannel deployment file.
 
-    To download this file on ubuntu VM, try following command:
+    To download this file on ubuntu VM, and begin deployment try following command:
     ```bash
-    wget 
+    $ kubectl apply -f https://raw.githubusercontent.com/mahendra-shinde/docker-k8s-july-2019/master/k8s-with-windows-workers/kube-flannel.yml 
     ```
-
     
+13. After the installation, check node status once again...
 
-13. Once the file is open, locate the following section of file, and modify it:
-
-    > OLD FILE
-    ```json
-    net-conf.json: |
-    {
-      "Network": "10.244.0.0/16",
-      "Backend": {
-        "Type": "vxlan"
-      }
-    }
+    ```bash
+    $ kubectl get nodes
     ```
-
-    > NEW FILE
-    ```json
-    
-    ```
-
-    > Notice the Backend type and Network IP range. The IP range MUST match with `pod-network-cidr` used with `kubeadm init` command. 
-    > You need to set TWO port mappings VNI and Port to values 4096 and 4789 respectivally.
-
 
 ### Phase II  : Adding Windows Worker nodes
 
