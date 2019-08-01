@@ -52,3 +52,40 @@
     ## Exit from ROOT user
     exit
     ```
+
+7.  Set docker daemon to start on OS Boot
+
+    $ sudo systemctl enable docker
+
+8.  Bootstrap a cluster (Wait for cluster to be ready)
+
+    $ sudo kubeadm init
+
+    Command should generate TOKEN for adding worker nodes.
+
+9.  Copy the kubeconfig from ROOT folder to USER'S home folder
+
+    ```bash
+    mkdir -p $HOME/.kube                                                             sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                         sudo chown $(id -u):$(id -g) $HOME/.kube/config 
+    ```
+
+10. Test the cluster using kubectl
+
+    ```bash
+    $ kubectl get nodes
+    ```
+
+    NOTE: Your nodes are NOT READY
+
+11. Install the Network plugin 
+    
+    ## Default firewall (iptables) would block the the packets
+    ## Unblock using following command
+    $ sudo sysctl net.bridge.bridge-nf-call-iptables=1
+
+    ## Install weavenet plugin
+
+    $ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+    $ kubectl get nodes
+
