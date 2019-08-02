@@ -6,6 +6,7 @@ metadata:
     app: app1
 spec:
   replicas: 3
+  revisionHistoryLimit: 10
   strategy:
     rollingUpdate:
       maxUnavailable: 1
@@ -19,7 +20,7 @@ spec:
         name: deploy2-pod
     spec:
       containers:
-        - image: nginx:1.7.9
+        - image: nginx:1.7.8
           name: web
           ports:
             - containerPort: 80

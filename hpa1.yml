@@ -4,8 +4,8 @@ metadata:
   name: hpa1
 spec:
   maxReplicas: 10
-  minReplicas: 3
+  minReplicas: 1
   scaleTargetRef: 
     kind: Deployment
-    name: deploy1
+    name: myweb1
   targetCPUUtilizationPercentage: 80
