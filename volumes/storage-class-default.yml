@@ -1,0 +1,13 @@
+### Use only if default storage class is Unavailable
+## To verify
+## $ kubectl get storageclass
+## If no storage class is listed, then create one using this file
+## $ kubectl apply -f storage-class-default.yml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: hostpath
+provisioner: docker.io/hostpath
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+
